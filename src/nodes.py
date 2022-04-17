@@ -46,15 +46,6 @@ class DivideNode:
 
 
 @dataclass
-class PowerNode:
-    node_a: NumberNode
-    node_b: NumberNode
-
-    def __repr__(self) -> str:
-        return f"({self.node_a} ** {self.node_b})"
-
-
-@dataclass
 class PlusNode:
     node: NumberNode
 

@@ -25,8 +25,21 @@ class Interpreter:
 
     def visit_DivideNode(self, node: DivideNode):
         try:
-            res = Number(self.visit(node.node_a) / self.visit(node.node_b))
-            return res
+            _node_a_value: Number | float = self.visit(node.node_a)
+            _node_b_value: Number | float = self.visit(node.node_b)
+
+            if isinstance(_node_a_value, Number):
+                node_a = _node_a_value
+            else:
+                node_a = Number(value=_node_a_value)
+
+            if isinstance(_node_b_value, Number):
+                node_b = _node_b_value
+            else:
+                node_b = Number(value=self.visit(node.node_b))
+
+            return Number(node_a.value / node_b.value)
+
         except ZeroDivisionError:
             raise Exception("Run time math error")
 
