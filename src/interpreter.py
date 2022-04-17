@@ -11,37 +11,42 @@ class Interpreter:
     def visit_default(self, node):
         raise Exception(f"No visitor for {type(node).__name__}")
 
+    def _covert_to_Number(self, value: Number | float):
+        if isinstance(value, Number):
+            return value
+        else:
+            return Number(value=value)
+
     def visit_NumberNode(self, node: NumberNode):
         return node.value
 
     def visit_AddNode(self, node: AddNode):
-        return Number(self.visit(node.node_a) + self.visit(node.node_b))
+        return Number(
+            self._covert_to_Number(self.visit(node.node_a)).value
+            + self._covert_to_Number(self.visit(node.node_b)).value
+        )
 
     def visit_SubtractNode(self, node: SubtractNode):
-        return Number(self.visit(node.node_a) - self.visit(node.node_b))
+        return Number(
+            self._covert_to_Number(self.visit(node.node_a)).value
+            - self._covert_to_Number(self.visit(node.node_b)).value
+        )
 
     def visit_MultiplyNode(self, node: MultiplyNode):
-        return Number(self.visit(node.node_a) * self.visit(node.node_b))
+        return Number(
+            self._covert_to_Number(self.visit(node.node_a)).value
+            * self._covert_to_Number(self.visit(node.node_b)).value
+        )
 
     def visit_DivideNode(self, node: DivideNode):
         try:
-            _node_a_value: Number | float = self.visit(node.node_a)
-            _node_b_value: Number | float = self.visit(node.node_b)
-
-            if isinstance(_node_a_value, Number):
-                node_a = _node_a_value
-            else:
-                node_a = Number(value=_node_a_value)
-
-            if isinstance(_node_b_value, Number):
-                node_b = _node_b_value
-            else:
-                node_b = Number(value=self.visit(node.node_b))
+            node_a: Number = self._covert_to_Number(self.visit(node.node_a))
+            node_b: Number = self._covert_to_Number(self.visit(node.node_b))
 
             return Number(node_a.value / node_b.value)
 
         except ZeroDivisionError:
-            raise Exception("Run time math error")
+            raise Exception("Run time math error - Division by zero")
 
     def visit_PlusNode(self, node: PlusNode):
         return Number(self.visit(node.node))

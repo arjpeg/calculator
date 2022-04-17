@@ -4,6 +4,7 @@ from src import run
 while True:
     try:
         code = input("calc> ")
-        run(code)
+        res = run(code)
+        print(res)
     except KeyboardInterrupt:
         break
