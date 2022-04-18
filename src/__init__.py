@@ -4,7 +4,7 @@ from src.token import Token
 from src.parser_ import Parser
 
 
-def _run(code: str) -> list[Token]:
+def _run(code: str) -> tuple[list[Token], list[Token]]:
     lexer = Lexer(code)
     tokens = lexer.generate_tokens()
 
@@ -14,20 +14,22 @@ def _run(code: str) -> list[Token]:
     tree = parser.parse()
 
     if not tree:
-        return []
+        return [], []
 
     interpreter = Interpreter()
     res = interpreter.visit(tree)
 
-    return res
+    return res, tokens_list
 
 
 def run(code: str, debug=True) -> list[Token]:
     if debug:
-        return _run(code)
+        res, tokens_list = _run(code)
+        print(tokens_list)
+        return res
     else:
         try:
-            return _run(code)
+            return _run(code)[0]
         except Exception as e:
             print(e)
             return []
